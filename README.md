@@ -4,20 +4,22 @@ A minimal terminal chat built on **BPS-lite** (Bee pubsub, [bee#5626](https://gi
 
 - The **owner** of a channel publishes messages and decides who else may write (the **roster**).
 - **Seats** (rostered addresses) can publish too.
-- **Subscribers** only listen. They need no key and no postage stamp.
+- **Subscribers** only listen and need no key.
 
-Messages are relayed live through a **broker** node. Nothing is stored, so a new subscriber only sees messages sent after it joined.
+Messages are relayed live through a **broker** node. Nothing is stored, so nobody needs a postage stamp, and a new subscriber only sees messages sent after it joined. The one exception is the current roster, which the broker sends to everyone who joins.
 
 ## Requirements
 
 - Node.js 20+
 - `@ethersphere/bee-js@13.3.0-upcoming.g4568f7a`, a pre-release build with BPS support. It's pinned in `package.json` and installed by `npm install`.
-- A Bee node built from [bee#5626](https://github.com/ethersphere/bee/pull/5626), reachable at `BEE_URL`.
-- A broker: a full node from the same build, started with `--bps-broker`. It can be your own node. You need its overlay address:
+- A Bee node built from [bee#5626](https://github.com/ethersphere/bee/pull/5626), reachable at `BEE_URL`. A light node is enough.
+- A broker: a full node from the same build, started with `--bps-broker`. It must be a different node from the one at `BEE_URL`, because Bee refuses its own overlay as the broker. You need the broker's overlay address, which you can read from its API:
 
   ```sh
-  curl -s http://localhost:1633/addresses | jq -r .overlay
+  curl -s http://<broker api>/addresses | jq -r .overlay
   ```
+
+- Your node must be connected to the broker as a peer. If it isn't, connections close with `4003 … peer not found`.
 
 ## Install
 
@@ -32,7 +34,7 @@ Set these as environment variables:
 | Variable      | Required        | Default                 | Meaning                                         |
 | ------------- | --------------- | ----------------------- | ----------------------------------------------- |
 | `BROKER`      | yes             |                         | Overlay address of the broker node              |
-| `PRIVATE_KEY` | for `publish`   |                         | Your signing key. Its address is your identity  |
+| `PRIVATE_KEY` | for `publish`   |                         | Signing key for your messages. Its address is your identity. It needs no funds and is not your Bee node's wallet key |
 | `BEE_URL`     | no              | `http://localhost:1633` | Your Bee API                                    |
 | `TOPIC`       | no              | `sample-bps`            | Channel name. Owner and topic define a channel  |
 
@@ -59,7 +61,7 @@ Type a line and press Enter to send it. The owner also has these commands:
 
 - `/roster <address> <address> ...` grants seats to these addresses. Each call replaces the whole roster, so `/roster` with no addresses revokes all seats.
 - `/end` closes the channel for everyone.
-- `/quit` disconnects but leaves the channel open.
+- `/quit` disconnects but doesn't end the channel. If no publisher sends anything for 10 minutes, the broker drops the channel.
 
 ### 3. Anyone: listen
 
@@ -75,7 +77,7 @@ This prints messages from the owner and from seats, plus roster changes. If the 
 PRIVATE_KEY=<seat key> BROKER=<broker overlay> node bps.js publish <owner address>
 ```
 
-The seat waits until the owner has added its address with `/roster`, then works like the owner's prompt, without `/roster` and `/end`.
+The seat waits until the owner, while connected, has added its address with `/roster`. After that it works like the owner's prompt, without `/roster` and `/end`.
 
 ## Example session
 
@@ -124,4 +126,4 @@ const subscription = reader.messaging.bpsSubscribe(owner, topic, {
 - **Nothing is persisted.** BPS is for live messages only. Store anything that must outlive the session somewhere else, such as a Swarm feed.
 - **Two streams per node and channel.** The broker allows at most two connections to one channel through the same Bee node. A third, such as a subscriber, an owner and a seat on one node, is refused with `join FULL`. Run the roles on different Bee nodes.
 - **Ordering** is guaranteed only within one publisher's messages, not across publishers.
-- **Keepalive.** The broker drops a channel after 10 minutes of inactivity. The publisher sends a heartbeat every 60 seconds to keep it open.
+- **Keepalive.** The broker drops a channel after 10 minutes of inactivity. While a publisher is connected, it sends a heartbeat every 60 seconds to keep the channel open.
