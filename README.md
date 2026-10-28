@@ -11,6 +11,7 @@ Messages are relayed live through a **broker** node. Nothing is stored, so a new
 ## Requirements
 
 - Node.js 20+
+- `@ethersphere/bee-js@13.3.0-upcoming.g4568f7a`, a pre-release build with BPS support. It's pinned in `package.json` and installed by `npm install`.
 - A Bee node built from [bee#5626](https://github.com/ethersphere/bee/pull/5626), reachable at `BEE_URL`.
 - A broker: a full node from the same build, started with `--bps-broker`. It can be your own node. You need its overlay address:
 
