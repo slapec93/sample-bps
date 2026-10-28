@@ -122,5 +122,6 @@ const subscription = reader.messaging.bpsSubscribe(owner, topic, {
 
 - **Message indexes must never be reused.** A publisher's indexes start at 0 and only go up, and the broker drops anything older than what it has already seen. This app saves the next index for each owner, topic and identity in `.bps-state.json`. Don't delete that file while a channel is in use.
 - **Nothing is persisted.** BPS is for live messages only. Store anything that must outlive the session somewhere else, such as a Swarm feed.
+- **Two streams per node and channel.** The broker allows at most two connections to one channel through the same Bee node. A third, such as a subscriber, an owner and a seat on one node, is refused with `join FULL`. Run the roles on different Bee nodes.
 - **Ordering** is guaranteed only within one publisher's messages, not across publishers.
 - **Keepalive.** The broker drops a channel after 10 minutes of inactivity. The publisher sends a heartbeat every 60 seconds to keep it open.
