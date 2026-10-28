@@ -1,0 +1,16 @@
+{
+  "name": "sample-bps",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal BPS-lite (Bee pubsub) chat using bee-js",
+  "type": "module",
+  "bin": {
+    "sample-bps": "./bps.js"
+  },
+  "dependencies": {
+    "@ethersphere/bee-js": "file:../bee-js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
