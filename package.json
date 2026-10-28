@@ -11,6 +11,6 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@upcoming/bee-js": "^13.3.0"
+    "@ethersphere/bee-js": "13.3.0-upcoming.g4568f7a"
   }
 }

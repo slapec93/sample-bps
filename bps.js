@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { Bee, BpsPosition, PrivateKey, Topic } from '@upcoming/bee-js'
+import { Bee, BpsPosition, PrivateKey, Topic } from '@ethersphere/bee-js'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { createInterface } from 'node:readline'
 

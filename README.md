@@ -97,7 +97,7 @@ $ node bps.js subscribe 32350b3d12c0c8bebd20c600daff7ede370a0c01
 ## How it maps to bee-js
 
 ```js
-import { Bee, Topic } from '@upcoming/bee-js'
+import { Bee, Topic } from '@ethersphere/bee-js'
 
 const topic = Topic.fromString('sample-bps')
 
