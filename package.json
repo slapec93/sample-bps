@@ -7,10 +7,10 @@
   "bin": {
     "sample-bps": "./bps.js"
   },
-  "dependencies": {
-    "@ethersphere/bee-js": "file:../bee-js"
-  },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@upcoming/bee-js": "^13.3.0"
   }
 }

@@ -18,12 +18,6 @@ Messages are relayed live through a **broker** node. Nothing is stored, so a new
   curl -s http://localhost:1633/addresses | jq -r .overlay
   ```
 
-- bee-js with BPS support, checked out next to this folder as `../bee-js` and built:
-
-  ```sh
-  cd ../bee-js && npm install && npm run build
-  ```
-
 ## Install
 
 ```sh
@@ -103,7 +97,7 @@ $ node bps.js subscribe 32350b3d12c0c8bebd20c600daff7ede370a0c01
 ## How it maps to bee-js
 
 ```js
-import { Bee, Topic } from '@ethersphere/bee-js'
+import { Bee, Topic } from '@upcoming/bee-js'
 
 const topic = Topic.fromString('sample-bps')
 
